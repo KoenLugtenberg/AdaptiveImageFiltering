@@ -2,7 +2,6 @@ from sklearn.neighbors import NearestNeighbors
 import numpy as np
 from scipy.sparse import diags, csr_array
 from scipy.ndimage import convolve
-import seaborn as sns
 from math import log10, sqrt
 import cv2
 import imageio.v2 as imageio
@@ -615,7 +614,6 @@ def grid_search_filter(
 
         rows.append(result)
 
-        # Save after every run
         pd.DataFrame(rows).to_csv(csv_path, index=False)
 
         with open(jsonl_path, "a") as f:
@@ -623,17 +621,14 @@ def grid_search_filter(
 
     results = pd.DataFrame(rows)
 
-    # Sort entire dataframe by PSNR
     results = results.sort_values(
         "psnr",
         ascending=False,
         na_position="last"
     )
 
-    # Save final sorted version
     results.to_csv(csv_path, index=False)
 
-    # Print best result
     best_row = results.iloc[0]
     print("\nBest result:")
     print(best_row)
