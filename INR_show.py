@@ -25,10 +25,7 @@ im_noisy = np.clip(
     255
 ).astype(np.uint8)
 
-
-# --------------------------------------------------
 # Load checkpoint
-# --------------------------------------------------
 
 checkpoint = torch.load(
     r"C:\Users\lugte\anaconda_projects\ImageFiltering\inr_images\donald_duck_comic_siren.pt",
@@ -52,9 +49,7 @@ model.eval()
 print("INR loaded.")
 
 
-# --------------------------------------------------
 # Recreate coordinates
-# --------------------------------------------------
 
 yy, xx = np.meshgrid(
     np.linspace(-1, 1, H),
@@ -71,25 +66,19 @@ coords_t = torch.tensor(
 )
 
 
-# --------------------------------------------------
 # Reconstruct image
-# --------------------------------------------------
 
 with torch.no_grad():
     recon = model(coords_t).numpy()
 
 recon = recon.reshape(H, W, 3, order="F")
-
-# Clip to valid range
 recon = np.clip(recon, 0, 1)
 
 # Convert to uint8 for OpenCV
 recon_uint8 = (255 * recon).astype(np.uint8)
 
 
-# --------------------------------------------------
 # Display
-# --------------------------------------------------
 
 cv2.imshow("INR Reconstruction", recon_uint8)
 cv2.waitKey(0)
@@ -101,13 +90,10 @@ with torch.no_grad():
     _, Q = model(coords_t, return_features=True)
 
 Q = Q.numpy()
-# Compute std for each feature (column)
 stds = np.std(Q, axis=0)
 
-# Indices of columns sorted by decreasing std
 sorted_idx = np.argsort(stds)[::-1]
 
-# Reorder columns
 Q = Q[:, sorted_idx]
 
 fig, axes = plt.subplots(5, 10, figsize=(10, 8))
